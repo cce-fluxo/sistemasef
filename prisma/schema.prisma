@@ -1,0 +1,113 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+// Prisma 7: a connection string não vive mais aqui. Runtime usa um driver
+// adapter (@prisma/adapter-pg) configurado em lib/prisma.ts com DATABASE_URL
+// (Supavisor, porta 6543). Migrate/introspect usam prisma.config.ts com
+// DIRECT_URL (porta 5432, sem pooler).
+datasource db {
+  provider = "postgresql"
+}
+
+enum TipoSessao {
+  ESTANDE
+  PALESTRA
+
+  @@map("tipo_sessao")
+}
+
+enum Role {
+  PARTICIPANTE
+  ADMIN
+
+  @@map("role")
+}
+
+// Campo `role` não existe no MER original; foi adicionado para resolver
+// autorização de admin via claim do JWT em vez de lista hard-coded de e-mails.
+model Participante {
+  id        Int    @id @default(autoincrement()) @map("id_participante")
+  nome      String @db.VarChar(255)
+  email     String @unique @db.VarChar(255)
+  hashSenha String @map("hash_senha") @db.VarChar(255)
+  role      Role   @default(PARTICIPANTE)
+
+  presencas            Presenca[]
+  missoesDesbloqueadas MissaoDesbloqueada[]
+  rankingSnapshots     RankingSnapshot[]
+
+  @@map("participante")
+}
+
+model Sessao {
+  id         Int        @id @default(autoincrement()) @map("id_sessao")
+  nome       String     @db.VarChar(255)
+  tipo       TipoSessao
+  qrCode     String     @unique @map("qr_code") @db.VarChar(255)
+  pontosBase Int        @map("pontos_base")
+
+  presencas Presenca[]
+  missoes   Missao[]
+
+  @@index([qrCode])
+  @@map("sessao")
+}
+
+model Presenca {
+  id             Int      @id @default(autoincrement()) @map("id_presenca")
+  idParticipante Int      @map("id_participante")
+  idSessao       Int      @map("id_sessao")
+  registradoEm   DateTime @map("registrado_em") @db.Date
+
+  participante Participante @relation(fields: [idParticipante], references: [id], onDelete: Cascade)
+  sessao       Sessao       @relation(fields: [idSessao], references: [id], onDelete: Cascade)
+
+  @@unique([idParticipante, idSessao])
+  @@index([idSessao])
+  @@index([idParticipante])
+  @@index([registradoEm])
+  @@map("presenca")
+}
+
+model Missao {
+  id           Int    @id @default(autoincrement()) @map("id_missao")
+  idSessao     Int?   @map("id_sessao")
+  titulo       String @db.VarChar(255)
+  pontosBonus  Int    @map("pontos_bonus")
+  tipoCriterio String @map("tipo_criterio") @db.VarChar(255)
+  parametro    Int
+
+  sessao               Sessao?              @relation(fields: [idSessao], references: [id])
+  missoesDesbloqueadas MissaoDesbloqueada[]
+
+  @@map("missao")
+}
+
+model MissaoDesbloqueada {
+  id             Int      @id @default(autoincrement()) @map("id_missao_desbloqueada")
+  idParticipante Int      @map("id_participante")
+  idMissao       Int      @map("id_missao")
+  desbloqueadaEm DateTime @map("desbloqueada_em") @db.Date
+
+  participante Participante @relation(fields: [idParticipante], references: [id], onDelete: Cascade)
+  missao       Missao       @relation(fields: [idMissao], references: [id], onDelete: Cascade)
+
+  @@unique([idParticipante, idMissao])
+  @@map("missao_desbloqueada")
+}
+
+model RankingSnapshot {
+  id               Int      @id @default(autoincrement()) @map("id_ranking")
+  idParticipante   Int      @map("id_participante")
+  pontosCalculados Int      @map("pontos_calculados")
+  posicao          Int
+  dia              DateTime @db.Date
+  geradoEm         DateTime @map("gerado_em") @db.Date
+
+  participante Participante @relation(fields: [idParticipante], references: [id], onDelete: Cascade)
+
+  @@unique([idParticipante, dia])
+  @@index([dia])
+  @@map("ranking_snapshot")
+}
