@@ -10,6 +10,7 @@ export function LoginForm() {
   return (
     <form action={formAction} className="flex flex-col gap-4">
       <div className="flex flex-col gap-1.5">
+        <div className="text-black">DEVELOP</div>
         <label htmlFor="email" className="text-sm font-medium text-foreground/70">
           E-mail
         </label>
