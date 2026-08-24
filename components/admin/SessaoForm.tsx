@@ -8,7 +8,14 @@ const campoClasse =
 
 type Props = {
   action: (prevState: AdminActionState | null, formData: FormData) => Promise<AdminActionState>;
-  valoresIniciais?: { nome: string; tipo: "ESTANDE" | "PALESTRA"; pontosBase: number };
+  valoresIniciais?: {
+    nome: string;
+    tipo: "ESTANDE" | "PALESTRA";
+    pontosBase: number;
+    dia?: string | null;
+    horario?: string | null;
+    local?: string | null;
+  };
   qrCode?: string;
 };
 
@@ -51,6 +58,44 @@ export function SessaoForm({ action, valoresIniciais, qrCode }: Props) {
           min={0}
           defaultValue={valoresIniciais?.pontosBase ?? 10}
           required
+          className={campoClasse}
+        />
+      </div>
+
+      <div className="flex flex-col gap-1.5">
+        <label htmlFor="dia" className="text-sm font-medium text-foreground/70">
+          Dia
+        </label>
+        <input
+          id="dia"
+          name="dia"
+          type="date"
+          defaultValue={valoresIniciais?.dia ?? undefined}
+          className={campoClasse}
+        />
+      </div>
+
+      <div className="flex flex-col gap-1.5">
+        <label htmlFor="horario" className="text-sm font-medium text-foreground/70">
+          Horário
+        </label>
+        <input
+          id="horario"
+          name="horario"
+          type="time"
+          defaultValue={valoresIniciais?.horario ?? undefined}
+          className={campoClasse}
+        />
+      </div>
+
+      <div className="flex flex-col gap-1.5">
+        <label htmlFor="local" className="text-sm font-medium text-foreground/70">
+          Local
+        </label>
+        <input
+          id="local"
+          name="local"
+          defaultValue={valoresIniciais?.local ?? undefined}
           className={campoClasse}
         />
       </div>

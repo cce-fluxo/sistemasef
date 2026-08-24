@@ -37,11 +37,23 @@ export function QrScanner({ ativo, onDecode }: Props) {
       scannerRef.current = scanner;
       setStatus("iniciando");
 
+      // `html5-qrcode` continua chamando o callback de sucesso a cada frame
+      // (fps: 10) até o scanner ser efetivamente parado, o que só acontece
+      // de forma assíncrona quando o componente reage à mudança de estado.
+      // Sem essa trava, o mesmo QR é decodificado várias vezes nesse meio
+      // tempo, disparando `onDecode`/o popup de resultado repetidamente.
+      let lido = false;
+
       try {
         await scanner.start(
           { facingMode: "environment" },
           { fps: 10, qrbox: 240 },
-          (decodedText) => onDecodeRef.current(decodedText),
+          (decodedText) => {
+            if (lido) return;
+            lido = true;
+            scanner.pause(true);
+            onDecodeRef.current(decodedText);
+          },
           () => {
             // Erro de decodificação por frame (nenhum QR visível naquele
             // instante) — esperado a cada frame sem QR na câmera, ignorado.

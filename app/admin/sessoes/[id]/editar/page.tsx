@@ -19,7 +19,14 @@ export default async function EditarSessaoPage({ params }: { params: Promise<{ i
       <div className="mt-6">
         <SessaoForm
           action={atualizarSessaoAction.bind(null, sessao.id)}
-          valoresIniciais={{ nome: sessao.nome, tipo: sessao.tipo, pontosBase: sessao.pontosBase }}
+          valoresIniciais={{
+            nome: sessao.nome,
+            tipo: sessao.tipo,
+            pontosBase: sessao.pontosBase,
+            dia: sessao.dia ? sessao.dia.toISOString().slice(0, 10) : null,
+            horario: sessao.horario,
+            local: sessao.local,
+          }}
           qrCode={sessao.qrCode}
         />
       </div>

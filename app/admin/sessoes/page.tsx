@@ -33,6 +33,9 @@ export default async function AdminSessoesPage() {
               <p className="font-medium text-foreground">{sessao.nome}</p>
               <p className="text-sm text-foreground/60">
                 {sessao.tipo === "ESTANDE" ? "Estande" : "Palestra"} · {sessao.pontosBase} pts
+                {sessao.dia && ` · ${sessao.dia.toLocaleDateString("pt-BR", { timeZone: "UTC" })}`}
+                {sessao.horario && ` · ${sessao.horario}`}
+                {sessao.local && ` · ${sessao.local}`}
               </p>
             </div>
             <div className="flex items-center gap-4">

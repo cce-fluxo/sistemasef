@@ -36,10 +36,13 @@ async function buscarMissoesComStatus(idParticipante: number): Promise<MissaoCom
 /**
  * Cacheada tanto pela tag do participante (desbloqueios mudam por
  * check-in) quanto pela tag "catalogo" (o texto/pontuação das missões
- * mudam pela área admin).
+ * mudam pela área admin). `revalidate` funciona como rede de segurança
+ * para mudanças feitas fora do app (seed, Prisma Studio, SQL direto),
+ * que não passam por revalidateTag.
  */
 export function getMissoesComStatus(idParticipante: number): Promise<MissaoComStatus[]> {
   return unstable_cache(() => buscarMissoesComStatus(idParticipante), [`missoes-status-${idParticipante}`], {
     tags: [`participante:${idParticipante}:resumo`, "catalogo"],
+    revalidate: 30,
   })();
 }

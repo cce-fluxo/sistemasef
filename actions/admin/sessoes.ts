@@ -13,7 +13,21 @@ const sessaoSchema = z.object({
   nome: z.string().trim().min(1),
   tipo: z.enum(["ESTANDE", "PALESTRA"]),
   pontosBase: z.coerce.number().int().min(0),
+  dia: z.coerce.date().optional().nullable(),
+  horario: z.string().trim().min(1).max(20).optional().nullable(),
+  local: z.string().trim().min(1).max(255).optional().nullable(),
 });
+
+function parseCamposAgenda(formData: FormData) {
+  const dia = formData.get("dia");
+  const horario = formData.get("horario");
+  const local = formData.get("local");
+  return {
+    dia: dia ? dia : null,
+    horario: horario ? horario : null,
+    local: local ? local : null,
+  };
+}
 
 export async function criarSessaoAction(
   _prevState: AdminActionState | null,
@@ -25,6 +39,7 @@ export async function criarSessaoAction(
     nome: formData.get("nome"),
     tipo: formData.get("tipo"),
     pontosBase: formData.get("pontosBase"),
+    ...parseCamposAgenda(formData),
   });
   if (!parsed.success) {
     return { ok: false, erro: "Preencha nome, tipo e pontos base corretamente." };
@@ -49,6 +64,7 @@ export async function atualizarSessaoAction(
     nome: formData.get("nome"),
     tipo: formData.get("tipo"),
     pontosBase: formData.get("pontosBase"),
+    ...parseCamposAgenda(formData),
   });
   if (!parsed.success) {
     return { ok: false, erro: "Preencha nome, tipo e pontos base corretamente." };

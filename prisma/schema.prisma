@@ -46,6 +46,12 @@ model Sessao {
   tipo       TipoSessao
   qrCode     String     @unique @map("qr_code") @db.VarChar(255)
   pontosBase Int        @map("pontos_base")
+  // Agenda real (dia/horário/local) do evento — antes não existia no MER
+  // original; a página de agenda usava dados estáticos de placeholder por
+  // falta desses campos (ver app/(participante)/agenda/page.tsx).
+  dia        DateTime?  @db.Date
+  horario    String?    @db.VarChar(20)
+  local      String?    @db.VarChar(255)
 
   presencas Presenca[]
   missoes   Missao[]

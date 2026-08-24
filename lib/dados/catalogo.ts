@@ -19,10 +19,13 @@ async function buscarCatalogoPontuacao(): Promise<CatalogoPontuacao> {
 }
 
 /**
- * Catálogo (sessões + missões) muda só pela área admin — cacheado sob a tag
- * "catalogo", invalidada quando um admin cria/edita Sessao ou Missao
- * (etapa 7).
+ * Catálogo (sessões + missões) muda principalmente pela área admin — cacheado
+ * sob a tag "catalogo", invalidada quando um admin cria/edita Sessao ou
+ * Missao. `revalidate` funciona como rede de segurança para mudanças feitas
+ * fora do app (seed, Prisma Studio, SQL direto), que não passam por
+ * revalidateTag.
  */
 export const getCatalogoPontuacao = unstable_cache(buscarCatalogoPontuacao, ["catalogo-pontuacao"], {
   tags: ["catalogo"],
+  revalidate: 30,
 });
