@@ -2,6 +2,7 @@ import Link from "next/link";
 import { logoutAction } from "@/actions/auth";
 
 const LINKS = [
+  { href: "/admin", label: "Home" },
   { href: "/admin/sessoes", label: "Sessões" },
   { href: "/admin/missoes", label: "Missões" },
   { href: "/admin/presencas", label: "Presenças" },

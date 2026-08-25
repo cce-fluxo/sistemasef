@@ -5,6 +5,7 @@ import { revalidateTag } from "next/cache";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/auth/require-admin";
+import { invalidarResumoDeParticipantesComMissao } from "@/lib/dados/participante";
 
 export type AdminActionState = { ok: true } | { ok: false; erro: string };
 
@@ -75,12 +76,22 @@ export async function atualizarMissaoAction(
 
   await prisma.missao.update({ where: { id }, data: dados });
 
+  // titulo/pontosBonus mudaram: todo participante que já desbloqueou essa
+  // missão está com o resumo cacheado desatualizado.
+  await invalidarResumoDeParticipantesComMissao(id);
+
   revalidateTag("catalogo", "max");
   redirect("/admin/missoes");
 }
 
 export async function excluirMissaoAction(id: number): Promise<void> {
   await requireAdmin();
+
+  // Busca os desbloqueios (e invalida o resumo de quem os tem) ANTES do
+  // delete — depois de apagar a Missao não dá mais pra saber quem tinha
+  // desbloqueado (a FK em MissaoDesbloqueada some junto).
+  await invalidarResumoDeParticipantesComMissao(id);
+
   await prisma.missao.delete({ where: { id } });
   revalidateTag("catalogo", "max");
   redirect("/admin/missoes");

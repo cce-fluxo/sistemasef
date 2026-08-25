@@ -1,4 +1,4 @@
-import { unstable_cache } from "next/cache";
+import { unstable_cache, revalidateTag } from "next/cache";
 import { prisma } from "@/lib/prisma";
 
 export type ResumoParticipante = {
@@ -40,4 +40,21 @@ export function getResumoParticipante(idParticipante: number): Promise<ResumoPar
   return unstable_cache(() => buscarResumoParticipante(idParticipante), [`participante-resumo-${idParticipante}`], {
     tags: [`participante:${idParticipante}:resumo`],
   })();
+}
+
+/**
+ * Uma Missao (título, pontosBonus, exclusão) afeta o resumo de todo
+ * participante que já a desbloqueou — não só quem faz check-in agora. Toda
+ * action que cria, edita ou deleta uma Missao precisa chamar isto para não
+ * deixar `getResumoParticipante` servindo pontuação desatualizada.
+ */
+export async function invalidarResumoDeParticipantesComMissao(idMissao: number): Promise<void> {
+  const desbloqueios = await prisma.missaoDesbloqueada.findMany({
+    where: { idMissao },
+    select: { idParticipante: true },
+  });
+
+  for (const { idParticipante } of desbloqueios) {
+    revalidateTag(`participante:${idParticipante}:resumo`, "max");
+  }
 }
