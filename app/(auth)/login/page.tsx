@@ -1,10 +1,15 @@
 import type { Metadata } from "next";
+import { AuthCard } from "@/components/auth/AuthCard";
 import { LoginForm } from "@/components/auth/LoginForm";
 
 export const metadata: Metadata = {
-  title: "Entrar — Evento Gamificado",
+  title: "Semana Fluxo — 021",
 };
 
 export default function LoginPage() {
-  return <LoginForm />;
+  return (
+    <AuthCard title="Entrar" subtitle="Acesse sua conta para continuar">
+      <LoginForm />
+    </AuthCard>
+  );
 }

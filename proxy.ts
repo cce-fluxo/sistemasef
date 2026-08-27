@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { SESSION_COOKIE, sessionCookieOptions, signSession, shouldRefresh, verifySession } from "@/lib/auth/session";
 
-const PUBLIC_PATHS = ["/login", "/cadastro"];
+const PUBLIC_PATHS = ["/login", "/cadastro", "/recuperar-senha"];
 
 function isPublicPath(pathname: string): boolean {
   return PUBLIC_PATHS.some((p) => pathname === p || pathname.startsWith(`${p}/`));

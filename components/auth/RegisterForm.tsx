@@ -3,6 +3,7 @@
 import { useActionState } from "react";
 import Link from "next/link";
 import { registerAction } from "@/actions/auth";
+import { UserIcon, MailIcon, LockIcon } from "./icons";
 
 export function RegisterForm() {
   const [state, formAction, isPending] = useActionState(registerAction, null);
@@ -10,8 +11,8 @@ export function RegisterForm() {
   return (
     <form action={formAction} className="flex flex-col gap-4">
       <div className="flex flex-col gap-1.5">
-        <label htmlFor="nome" className="text-sm font-medium text-foreground/70">
-          Nome
+        <label htmlFor="nome" className="flex items-center gap-1.5 text-sm font-medium text-foreground/70">
+          <UserIcon /> Nome
         </label>
         <input
           id="nome"
@@ -25,8 +26,8 @@ export function RegisterForm() {
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <label htmlFor="email" className="text-sm font-medium text-foreground/70">
-          E-mail
+        <label htmlFor="email" className="flex items-center gap-1.5 text-sm font-medium text-foreground/70">
+          <MailIcon /> E-mail
         </label>
         <input
           id="email"
@@ -40,8 +41,8 @@ export function RegisterForm() {
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <label htmlFor="senha" className="text-sm font-medium text-foreground/70">
-          Senha
+        <label htmlFor="senha" className="flex items-center gap-1.5 text-sm font-medium text-foreground/70">
+          <LockIcon /> Senha
         </label>
         <input
           id="senha"
