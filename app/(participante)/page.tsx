@@ -90,6 +90,15 @@ export default async function HomePage() {
           ))}
         </div>
 
+        {session.role === "ADMIN" && (
+          <Link
+            href="/admin"
+            className="mt-6 flex items-center justify-center gap-2 rounded-xl bg-brand-500 px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-600"
+          >
+            Ir para Home Admin
+          </Link>
+        )}
+
         {resumo.ultimasMissoes.length > 0 && (
           <section className="mt-8">
             <div className="flex items-center justify-between">
