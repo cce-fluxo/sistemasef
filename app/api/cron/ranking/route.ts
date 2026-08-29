@@ -74,7 +74,15 @@ export async function GET(request: Request) {
       skipDuplicates: true,
     });
 
-    revalidateTag("ranking", "max");
+    // `{ expire: 0 }` e não `"max"`: este handler é um job externo (cron da
+    // Vercel), não uma Server Action com read-your-own-writes. O perfil "max"
+    // só marca a tag como stale (stale-while-revalidate) e depende de uma
+    // revalidação em background que o serverless da Vercel costuma descartar
+    // depois que a resposta é enviada — então a tela do ranking continua
+    // servindo o snapshot antigo do `unstable_cache` (que não tem `revalidate`)
+    // por tempo indefinido. `{ expire: 0 }` expira a entrada na hora: a próxima
+    // visita é um cache miss bloqueante e lê o snapshot novo do banco.
+    revalidateTag("ranking", { expire: 0 });
 
     return NextResponse.json({ ok: true, participantes: linhas.length, gravados: resultado.count });
   } catch (error) {
