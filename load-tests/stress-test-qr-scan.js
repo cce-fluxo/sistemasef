@@ -128,13 +128,15 @@ const scanDuration = new Trend('scan_duration');
 const SCENARIO = __ENV.SCENARIO || 'vazao_real';
 const PICO_VUS = Number(__ENV.PICO_VUS || 500);
 
+//mudei as variaveis do banco  
+
 const SCENARIOS = {
   vazao_real: {
     executor: 'ramping-vus',
     startVUs: 0,
     stages: [
-      { duration: '30s', target: 200 },
-      { duration: '3m', target: 200 },
+      { duration: '30s', target: 300 },
+      { duration: '3m', target: 500 },
       { duration: '30s', target: 0 },
     ],
   },
