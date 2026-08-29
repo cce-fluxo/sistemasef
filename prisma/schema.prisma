@@ -36,6 +36,7 @@ model Participante {
   presencas            Presenca[]
   missoesDesbloqueadas MissaoDesbloqueada[]
   rankingSnapshots     RankingSnapshot[]
+  tokensRecuperacao    TokenRecuperacaoSenha[]
 
   @@map("participante")
 }
@@ -116,4 +117,24 @@ model RankingSnapshot {
   @@unique([idParticipante, dia])
   @@index([dia])
   @@map("ranking_snapshot")
+}
+
+// Recuperação de senha. Guarda apenas o SHA-256 do token — o valor em claro
+// existe uma única vez, dentro do link enviado por e-mail, e nunca é
+// persistido: um vazamento do banco não permite redefinir senha de ninguém.
+// SHA-256 (e não bcrypt) porque o token já tem 256 bits de entropia, não
+// precisa de key stretching, e o hash determinístico permite o índice único
+// usado na busca.
+model TokenRecuperacaoSenha {
+  id             Int       @id @default(autoincrement()) @map("id_token")
+  idParticipante Int       @map("id_participante")
+  hashToken      String    @unique @map("hash_token") @db.VarChar(64)
+  expiraEm       DateTime  @map("expira_em") @db.Timestamptz(3)
+  usadoEm        DateTime? @map("usado_em") @db.Timestamptz(3)
+  criadoEm       DateTime  @default(now()) @map("criado_em") @db.Timestamptz(3)
+
+  participante Participante @relation(fields: [idParticipante], references: [id], onDelete: Cascade)
+
+  @@index([idParticipante])
+  @@map("token_recuperacao_senha")
 }

@@ -3,56 +3,112 @@
 /* Dark mode via classe `.dark` na <html> (toggle manual), não media query. */
 @custom-variant dark (&:where(.dark, .dark *));
 
+/*
+ * Paleta e tipografia vêm do protótipo do Figma (Semana Fluxo 021). As cores
+ * de marca são idênticas nos dois temas; o que muda entre claro/escuro são as
+ * variáveis semânticas mais abaixo (--background, --surface, --text-*).
+ */
 @theme {
-  --font-display: var(--font-baloo), sans-serif;
-  --font-sans: var(--font-inter), sans-serif;
+  --font-display: var(--font-black-han), var(--font-oswald), sans-serif;
+  --font-heading: var(--font-oswald), sans-serif;
+  --font-sans: var(--font-nunito), sans-serif;
 
-  --color-brand-50: #fff1eb;
-  --color-brand-100: #ffdfd0;
-  --color-brand-300: #ff9d6e;
-  --color-brand-400: #ff8952;
-  --color-brand-500: #f2642e;
-  --color-brand-600: #d94f1f;
-  --color-brand-700: #b23c16;
+  --color-brand-300: #f79a72;
+  --color-brand-400: #f07340;
+  --color-brand-500: #e8521a;
+  --color-brand-600: #d64712;
+  --color-brand-700: #c43e0e;
 
-  --color-gold-300: #ffe27a;
-  --color-gold-400: #f5c518;
-  --color-gold-500: #e0ac00;
+  --color-gold-300: #f8d768;
+  --color-gold-400: #f5c83c;
+  --color-gold-500: #e8b820;
 
-  --color-navy-950: #0a1120;
-  --color-navy-900: #101a2e;
-  --color-navy-800: #17233b;
+  --color-navy-950: #1a1a2e;
+  --color-navy-900: #16213e;
+  --color-navy-800: #0f172a;
   --color-navy-700: #202f4a;
   --color-navy-600: #2c3e5e;
 
-  --color-success-400: #4ade80;
-  --color-success-500: #22c55e;
-  --color-info-500: #3b82f6;
+  --color-success-400: #3dad63;
+  --color-success-500: #2d8b4e;
+  --color-info-500: #4a5fce;
 }
 
-:root {
-  --background: #fdfaf6;
-  --foreground: #101a2e;
-  --surface: #ffffff;
-  --surface-muted: #f4ede4;
-}
-
+/* Tema escuro — padrão do app. */
+:root,
 .dark {
-  --background: var(--color-navy-950);
-  --foreground: #f4ede4;
-  --surface: var(--color-navy-900);
-  --surface-muted: var(--color-navy-800);
+  --background: #1a1a2e;
+  --background-alt: #16213e;
+  --foreground: #ffffff;
+  --surface: rgba(255, 255, 255, 0.06);
+  --surface-hover: rgba(255, 255, 255, 0.1);
+  --surface-muted: rgba(255, 255, 255, 0.1);
+  --border-soft: rgba(255, 255, 255, 0.1);
+  --border-strong: rgba(255, 255, 255, 0.2);
+  --text-muted: rgba(255, 255, 255, 0.6);
+  --text-faint: rgba(255, 255, 255, 0.38);
+  --input-bg: rgba(255, 255, 255, 0.08);
+  --input-border: rgba(255, 255, 255, 0.15);
+  --grid-card-bg: rgba(255, 255, 255, 0.06);
+  --grid-card-text: #ffffff;
+}
+
+/* Tema claro. */
+:root:not(.dark) {
+  --background: #f4f1ec;
+  --background-alt: #ffffff;
+  --foreground: #1a1a2e;
+  --surface: rgba(0, 0, 0, 0.05);
+  --surface-hover: rgba(0, 0, 0, 0.09);
+  --surface-muted: rgba(0, 0, 0, 0.11);
+  --border-soft: rgba(0, 0, 0, 0.1);
+  --border-strong: rgba(0, 0, 0, 0.2);
+  --text-muted: rgba(26, 26, 46, 0.62);
+  --text-faint: rgba(26, 26, 46, 0.38);
+  --input-bg: rgba(0, 0, 0, 0.06);
+  --input-border: rgba(0, 0, 0, 0.15);
+  /* No claro os cards de "Explorar" viram blocos laranja cheios (ver Figma). */
+  --grid-card-bg: #e8521a;
+  --grid-card-text: #ffffff;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-background-alt: var(--background-alt);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-surface-hover: var(--surface-hover);
+  --color-surface-muted: var(--surface-muted);
+  --color-line: var(--border-soft);
+  --color-line-strong: var(--border-strong);
+  --color-muted: var(--text-muted);
+  --color-faint: var(--text-faint);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
+
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-brand-500);
+  border-radius: 2px;
 }
 
 /*
- * Headers com pontilhado + gradiente, usados em home/sobre/agenda/missões.
+ * Headers com halftone (pontilhado) + listras diagonais sobre gradiente,
+ * usados em home/sobre/agenda/missões/ranking.
  * Precisam ser uma única declaração de `background-image` (múltiplas camadas
- * separadas por vírgula): combinar `bg-dot-pattern` com as utilities
+ * separadas por vírgula): combinar o pontilhado com as utilities
  * `bg-gradient-to-br from-* to-*` do Tailwind não funciona, porque CSS fora
  * de @layer sempre vence sobre utilities do Tailwind (que vivem em @layer) —
  * a segunda declaração de background-image simplesmente substituiria a
@@ -60,24 +116,264 @@ body {
  */
 .header-gradient-brand,
 .header-gradient-info,
-.header-gradient-gold {
-  background-size: 14px 14px, auto;
+.header-gradient-gold,
+.header-gradient-green {
+  background-size:
+    12px 12px,
+    22px 22px,
+    auto;
+  background-repeat: repeat, repeat, no-repeat;
 }
 
 .header-gradient-brand {
-  background-image: radial-gradient(rgba(255, 255, 255, 0.35) 1px, transparent 1px),
-    linear-gradient(to bottom right, var(--color-brand-500), var(--color-brand-700));
+  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.15) 1.5px, transparent 1.5px),
+    repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 8px,
+      rgba(255, 255, 255, 0.05) 8px,
+      rgba(255, 255, 255, 0.05) 16px
+    ),
+    linear-gradient(135deg, var(--color-brand-500) 0%, var(--color-brand-700) 100%);
 }
 
 .header-gradient-info {
-  background-image: radial-gradient(rgba(255, 255, 255, 0.35) 1px, transparent 1px),
-    linear-gradient(to bottom right, var(--color-info-500), var(--color-brand-700));
+  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.15) 1.5px, transparent 1.5px),
+    repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 8px,
+      rgba(255, 255, 255, 0.05) 8px,
+      rgba(255, 255, 255, 0.05) 16px
+    ),
+    linear-gradient(135deg, var(--color-info-500) 0%, #3347b0 100%);
 }
 
 .header-gradient-gold {
-  background-image: radial-gradient(rgba(255, 255, 255, 0.35) 1px, transparent 1px),
-    linear-gradient(to bottom right, var(--color-gold-400), var(--color-brand-500));
+  background-image: radial-gradient(circle, rgba(0, 0, 0, 0.12) 1.5px, transparent 1.5px),
+    repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 8px,
+      rgba(255, 255, 255, 0.12) 8px,
+      rgba(255, 255, 255, 0.12) 16px
+    ),
+    linear-gradient(135deg, var(--color-gold-400) 0%, var(--color-brand-500) 100%);
 }
+
+.header-gradient-green {
+  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.15) 1.5px, transparent 1.5px),
+    repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 8px,
+      rgba(255, 255, 255, 0.05) 8px,
+      rgba(255, 255, 255, 0.05) 16px
+    ),
+    linear-gradient(135deg, var(--color-success-500) 0%, #1e6037 100%);
+}
+
+/* ── Botões (estilo retrô com sombra "dura" embaixo) ───────────────── */
+.btn-primary {
+  background: var(--color-brand-500);
+  color: #fff;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1.0625rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 0.9rem 2rem;
+  border-radius: 12px;
+  width: 100%;
+  box-shadow: 0 4px 0 var(--color-brand-700);
+  transition:
+    transform 0.15s,
+    background 0.15s,
+    box-shadow 0.15s;
+}
+.btn-primary:hover:not(:disabled) {
+  background: var(--color-brand-400);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 0 var(--color-brand-700);
+}
+.btn-primary:active:not(:disabled) {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 var(--color-brand-700);
+}
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--color-gold-400);
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 1rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 0.8rem 2rem;
+  border-radius: 12px;
+  border: 2px solid var(--color-gold-400);
+  width: 100%;
+  transition: all 0.15s;
+}
+.btn-secondary:hover {
+  background: var(--color-gold-400);
+  color: var(--color-navy-950);
+}
+
+/* ── Inputs ────────────────────────────────────────────────────────── */
+.input-field {
+  background: var(--input-bg);
+  border: 2px solid var(--input-border);
+  border-radius: 12px;
+  padding: 0.875rem 1rem;
+  color: var(--foreground);
+  font-size: 1rem;
+  width: 100%;
+  outline: none;
+  transition:
+    border-color 0.2s,
+    background 0.2s;
+}
+.input-field:focus {
+  border-color: var(--color-brand-500);
+  background: rgba(232, 82, 26, 0.1);
+}
+.input-field::placeholder {
+  color: var(--text-faint);
+}
+
+/* ── Cards ─────────────────────────────────────────────────────────── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border-soft);
+  border-radius: 16px;
+  transition:
+    transform 0.2s,
+    background 0.2s;
+}
+.card-hover:hover {
+  background: var(--surface-hover);
+  transform: translateY(-2px);
+}
+
+.mission-card {
+  background: var(--surface-muted);
+  border: 1px solid var(--border-soft);
+  border-radius: 16px;
+  transition: all 0.2s;
+}
+.mission-card.completed {
+  background: rgba(45, 139, 78, 0.12);
+  border-color: rgba(45, 139, 78, 0.35);
+}
+
+/* ── Barra de progresso ────────────────────────────────────────────── */
+.progress-bar {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 100px;
+  overflow: hidden;
+  height: 10px;
+}
+.progress-fill {
+  height: 100%;
+  border-radius: 100px;
+  background: linear-gradient(90deg, var(--color-brand-500), var(--color-gold-400));
+  transition: width 0.5s ease;
+}
+
+/* ── Nav ───────────────────────────────────────────────────────────── */
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 16px;
+  border-radius: 12px;
+  min-width: 60px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-faint);
+  transition: all 0.2s;
+}
+.nav-item svg {
+  transition: transform 0.2s;
+}
+.nav-item.active {
+  color: var(--color-brand-500);
+}
+.nav-item.active svg {
+  transform: scale(1.15);
+}
+
+/* ── Leitor de QR Code ─────────────────────────────────────────────── */
+.qr-corner {
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  border-color: var(--color-brand-500);
+  border-style: solid;
+}
+.qr-corner-tl {
+  top: -2px;
+  left: -2px;
+  border-width: 3px 0 0 3px;
+  border-radius: 4px 0 0 0;
+}
+.qr-corner-tr {
+  top: -2px;
+  right: -2px;
+  border-width: 3px 3px 0 0;
+  border-radius: 0 4px 0 0;
+}
+.qr-corner-bl {
+  bottom: -2px;
+  left: -2px;
+  border-width: 0 0 3px 3px;
+  border-radius: 0 0 0 4px;
+}
+.qr-corner-br {
+  bottom: -2px;
+  right: -2px;
+  border-width: 0 3px 3px 0;
+  border-radius: 0 0 4px 0;
+}
+
+@keyframes scan-line {
+  0% {
+    top: 10%;
+  }
+  50% {
+    top: 85%;
+  }
+  100% {
+    top: 10%;
+  }
+}
+
+.animate-scan {
+  animation: scan-line 2s ease-in-out infinite;
+}
+
+/* ── Decorativos ───────────────────────────────────────────────────── */
+.halftone {
+  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.15) 1.5px, transparent 1.5px);
+  background-size: 12px 12px;
+}
+.stripes {
+  background-image: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 8px,
+    rgba(255, 255, 255, 0.05) 8px,
+    rgba(255, 255, 255, 0.05) 16px
+  );
+}
+
+/* ── Animações ─────────────────────────────────────────────────────── */
 
 /* Modal de resultado do check-in e cards de missão desbloqueada. */
 @keyframes pop-in {
@@ -95,7 +391,7 @@ body {
   animation: pop-in 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-/* Faixa de texto rolante no rodapé das telas de autenticação. */
+/* Faixa de texto rolante (ticker) no rodapé das telas de autenticação. */
 @keyframes ticker {
   from {
     transform: translateX(0);
@@ -107,4 +403,44 @@ body {
 
 .animate-ticker {
   animation: ticker 22s linear infinite;
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-up {
+  animation: slide-up 0.5s ease forwards;
+}
+
+/* Halo pulsante do botão de QR Code. */
+@keyframes pulse-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(232, 82, 26, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 12px rgba(232, 82, 26, 0);
+  }
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-ticker,
+  .animate-pulse-glow,
+  .animate-slide-up,
+  .animate-pop-in,
+  .animate-scan {
+    animation: none;
+  }
 }

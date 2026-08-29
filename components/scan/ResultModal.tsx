@@ -14,7 +14,7 @@ export function ResultModal({ resultado, onFechar }: Props) {
       onClick={onFechar}
     >
       <div
-        className="animate-pop-in w-full max-w-sm rounded-3xl bg-surface p-6 text-center shadow-2xl"
+        className="animate-pop-in w-full max-w-sm rounded-3xl border border-line bg-background-alt p-6 text-center shadow-2xl"
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
@@ -24,7 +24,7 @@ export function ResultModal({ resultado, onFechar }: Props) {
         <button
           type="button"
           onClick={onFechar}
-          className="mt-6 w-full rounded-xl bg-brand-500 py-3 font-display font-semibold text-white transition hover:bg-brand-600"
+          className="btn-primary mt-6"
         >
           {resultado.ok && !resultado.data.jaRegistrado ? "Continuar escaneando" : "Fechar"}
         </button>
@@ -40,8 +40,8 @@ function ConteudoSucesso({ data }: { data: CheckinResultado }) {
         <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-gold-400/20 text-3xl">
           ℹ️
         </div>
-        <h2 className="mt-4 font-display text-xl font-bold text-foreground">Presença já registrada</h2>
-        <p className="mt-1 text-sm text-foreground/60">
+        <h2 className="mt-4 font-heading text-lg font-semibold uppercase text-foreground">Presença já registrada</h2>
+        <p className="mt-1 text-sm text-muted">
           Você já tinha feito check-in em <strong>{data.nomeSessao}</strong>.
         </p>
       </>
@@ -50,11 +50,16 @@ function ConteudoSucesso({ data }: { data: CheckinResultado }) {
 
   return (
     <>
-      <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-success-500/20 text-3xl">
-        ✅
+      <div className="mx-auto flex h-25 w-25 items-center justify-center rounded-full bg-gradient-to-br from-success-500 to-success-400 text-white">
+        <svg viewBox="0 0 24 24" fill="currentColor" width={48} height={48} aria-hidden>
+          <path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+        </svg>
       </div>
-      <h2 className="mt-4 font-display text-xl font-bold text-foreground">Check-in em {data.nomeSessao}!</h2>
-      <p className="mt-1 font-display text-3xl font-bold text-brand-500">+{data.pontosGanhos} pontos</p>
+      <p className="mt-6 font-display text-[32px] leading-none uppercase text-gold-400">
+        +{data.pontosGanhos} pontos!
+      </p>
+      <h2 className="mt-2 font-heading text-lg font-semibold uppercase text-foreground">Presença registrada!</h2>
+      <p className="mt-1 text-sm text-muted">{data.nomeSessao}</p>
 
       {data.missoesDesbloqueadas.length > 0 && (
         <div className="mt-4 flex flex-col gap-2">
@@ -64,8 +69,8 @@ function ConteudoSucesso({ data }: { data: CheckinResultado }) {
               style={{ animationDelay: `${0.1 + i * 0.1}s`, animationFillMode: "backwards" }}
               className="animate-pop-in rounded-xl bg-gold-400/15 px-4 py-2.5 text-left"
             >
-              <p className="text-sm font-semibold text-gold-500">🏆 Missão desbloqueada</p>
-              <p className="text-sm text-foreground/80">
+              <p className="text-sm font-extrabold text-gold-400">🏆 Missão desbloqueada</p>
+              <p className="text-sm text-muted">
                 {missao.titulo} <span className="font-semibold">+{missao.pontosBonus} pts</span>
               </p>
             </div>
@@ -82,8 +87,8 @@ function ConteudoErro({ erro }: { erro: string }) {
       <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-red-500/15 text-3xl">
         ⚠️
       </div>
-      <h2 className="mt-4 font-display text-xl font-bold text-foreground">Não foi possível registrar</h2>
-      <p className="mt-1 text-sm text-foreground/60">{erro}</p>
+      <h2 className="mt-4 font-heading text-lg font-semibold uppercase text-foreground">Não foi possível registrar</h2>
+      <p className="mt-1 text-sm text-muted">{erro}</p>
     </>
   );
 }

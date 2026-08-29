@@ -10,8 +10,8 @@ export function LoginForm() {
 
   return (
     <form action={formAction} className="flex flex-col gap-4">
-      <div className="flex flex-col gap-1.5">
-        <label htmlFor="email" className="flex items-center gap-1.5 text-sm font-medium text-foreground/70">
+      <div className="flex flex-col gap-2">
+        <label htmlFor="email" className="flex items-center gap-2 text-[13px] font-bold tracking-wider uppercase text-muted">
           <MailIcon /> E-mail
         </label>
         <input
@@ -21,12 +21,12 @@ export function LoginForm() {
           autoComplete="email"
           required
           placeholder="seu@email.com"
-          className="rounded-xl border border-black/10 bg-surface-muted px-4 py-3 text-sm outline-none focus:border-brand-500 dark:border-white/10"
+          className="input-field"
         />
       </div>
 
-      <div className="flex flex-col gap-1.5">
-        <label htmlFor="senha" className="flex items-center gap-1.5 text-sm font-medium text-foreground/70">
+      <div className="flex flex-col gap-2">
+        <label htmlFor="senha" className="flex items-center gap-2 text-[13px] font-bold tracking-wider uppercase text-muted">
           <LockIcon /> Senha
         </label>
         <input
@@ -36,13 +36,13 @@ export function LoginForm() {
           autoComplete="current-password"
           required
           placeholder="••••••••"
-          className="rounded-xl border border-black/10 bg-surface-muted px-4 py-3 text-sm outline-none focus:border-brand-500 dark:border-white/10"
+          className="input-field"
         />
       </div>
 
       <Link
         href="/recuperar-senha"
-        className="-mt-2 self-end text-xs font-semibold text-brand-500 hover:underline"
+        className="-mt-1 self-end text-[13px] font-bold text-gold-400 hover:underline"
       >
         Esqueci minha senha
       </Link>
@@ -56,14 +56,14 @@ export function LoginForm() {
       <button
         type="submit"
         disabled={isPending}
-        className="mt-2 rounded-xl bg-brand-500 py-3 text-center font-display text-base font-semibold text-white shadow-lg shadow-brand-500/30 transition hover:bg-brand-600 disabled:opacity-60"
+        className="btn-primary mt-2"
       >
         {isPending ? "Entrando..." : "Entrar"}
       </button>
 
-      <p className="text-center text-sm text-foreground/70">
+      <p className="text-center text-sm text-muted">
         Não tem conta?{" "}
-        <Link href="/cadastro" className="font-semibold text-brand-500 hover:underline">
+        <Link href="/cadastro" className="font-extrabold text-brand-500 hover:underline">
           Cadastre-se aqui
         </Link>
       </p>

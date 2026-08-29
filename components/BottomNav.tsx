@@ -3,34 +3,21 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+// Ícones sólidos (fill), como no protótipo do Figma — não os de contorno.
 const ICONS = {
-  home: <path d="M4 11.5 12 5l8 6.5V19a1 1 0 0 1-1 1h-4.5v-5.5h-5V20H5a1 1 0 0 1-1-1z" />,
+  home: <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />,
   sobre: (
-    <>
-      <circle cx="12" cy="12" r="9" />
-      <path d="M12 8h.01M11 12h1v5h1" />
-    </>
+    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" />
   ),
-  missoes: <path d="m12 3 2.6 5.6L21 9.3l-4.5 4.2L17.6 20 12 16.8 6.4 20l1.1-6.5L3 9.3l6.4-.7z" />,
+  missoes: <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />,
   agenda: (
-    <>
-      <rect x="3" y="4.5" width="18" height="16" rx="2" />
-      <path d="M3 9.5h18M8 3v3M16 3v3" />
-    </>
+    <path d="M19 3h-1V1h-2v2H8V1H6v2H5a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zm0 18H5V9h14v12z" />
   ),
 };
 
-function NavIcon({ name }: { name: keyof typeof ICONS }) {
+function NavIcon({ name, size = 22 }: { name: keyof typeof ICONS; size?: number }) {
   return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={1.8}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className="h-5 w-5"
-    >
+    <svg viewBox="0 0 24 24" fill="currentColor" width={size} height={size} aria-hidden>
       {ICONS[name]}
     </svg>
   );
@@ -50,37 +37,27 @@ export function BottomNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-20 border-t border-white/5 bg-navy-950/95 px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-2 backdrop-blur">
-      <div className="mx-auto flex max-w-md items-center justify-between">
-        {LEFT_LINKS.map((link) => (
-          <NavLink key={link.href} {...link} active={pathname === link.href} />
-        ))}
+    <nav className="fixed inset-x-0 bottom-0 z-[100] flex items-start justify-around border-t-2 border-line bg-background-alt px-2 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
+      {LEFT_LINKS.map((link) => (
+        <NavLink key={link.href} {...link} active={pathname === link.href} />
+      ))}
 
-        <Link
-          href="/scan"
-          aria-label="Escanear QR Code"
-          className="relative -mt-8 flex h-16 w-16 items-center justify-center rounded-full border-4 border-navy-950 bg-brand-500 text-white shadow-lg shadow-brand-500/40 transition hover:bg-brand-600"
-        >
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth={1.8}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="h-7 w-7"
-          >
-            <rect x="3" y="3" width="7" height="7" rx="1" />
-            <rect x="14" y="3" width="7" height="7" rx="1" />
-            <rect x="3" y="14" width="7" height="7" rx="1" />
-            <path d="M14 14h3v3h-3zM20 14v3M14 20h3M20 20v.01" />
+      <Link
+        href="/scan"
+        aria-label="Escanear QR Code"
+        className="-mt-6 flex flex-col items-center gap-0.5"
+      >
+        <span className="animate-pulse-glow flex h-15 w-15 items-center justify-center rounded-full border-[3px] border-background-alt bg-gradient-to-br from-brand-500 to-brand-400 text-white">
+          <svg viewBox="0 0 24 24" fill="currentColor" width={28} height={28} aria-hidden>
+            <path d="M3 11h8V3H3v8zm2-6h4v4H5V5zM3 21h8v-8H3v8zm2-6h4v4H5v-4zM13 3v8h8V3h-8zm6 6h-4V5h4v4zM19 19h2v2h-2zM13 13h2v2h-2zM15 15h2v2h-2zM13 17h2v2h-2zM15 19h2v2h-2zM17 17h2v2h-2zM17 13h2v2h-2zM19 15h2v2h-2z" />
           </svg>
-        </Link>
+        </span>
+        <span className="text-[10px] font-bold text-brand-500">QR CODE</span>
+      </Link>
 
-        {RIGHT_LINKS.map((link) => (
-          <NavLink key={link.href} {...link} active={pathname === link.href} />
-        ))}
-      </div>
+      {RIGHT_LINKS.map((link) => (
+        <NavLink key={link.href} {...link} active={pathname === link.href} />
+      ))}
     </nav>
   );
 }
@@ -97,12 +74,7 @@ function NavLink({
   active: boolean;
 }) {
   return (
-    <Link
-      href={href}
-      className={`flex flex-col items-center gap-1 px-3 py-1 text-xs font-medium transition ${
-        active ? "text-brand-400" : "text-white/50 hover:text-white/80"
-      }`}
-    >
+    <Link href={href} className={`nav-item ${active ? "active" : "hover:text-muted"}`}>
       <NavIcon name={icon} />
       {label}
     </Link>

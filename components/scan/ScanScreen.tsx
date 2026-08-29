@@ -27,15 +27,17 @@ export function ScanScreen() {
   }
 
   return (
-    <div className="px-6 py-8">
-      <h1 className="font-display text-2xl font-bold text-foreground">Escanear QR Code</h1>
-      <p className="mt-1 text-sm text-foreground/60">Aponte a câmera para o QR Code do estande ou palestra.</p>
+    <div className="px-5 py-10">
+      <h1 className="text-center font-heading text-[22px] font-bold uppercase text-foreground">Escanear QR Code</h1>
+      <p className="mx-auto mt-2 max-w-xs text-center text-sm text-muted">
+        Aponte a câmera para o QR Code do estande ou palestra
+      </p>
 
       <div className="mt-6">
         {modo === "camera" ? (
           <>
             <QrScanner ativo={scannerAtivo} onDecode={processarCodigo} />
-            {pending && <p className="mt-4 text-center text-sm text-foreground/60">Registrando presença...</p>}
+            {pending && <p className="mt-4 text-center text-sm text-muted">Registrando presença...</p>}
           </>
         ) : (
           <form onSubmit={handleManualSubmit} className="mx-auto flex max-w-xs flex-col gap-3">
@@ -44,12 +46,12 @@ export function ScanScreen() {
               onChange={(e) => setCodigoManual(e.target.value)}
               placeholder="Cole ou digite o código"
               disabled={pending}
-              className="rounded-xl border border-black/10 bg-surface-muted px-4 py-3 text-sm outline-none focus:border-brand-500 disabled:opacity-60 dark:border-white/10"
+              className="input-field disabled:opacity-60"
             />
             <button
               type="submit"
               disabled={pending}
-              className="rounded-xl bg-brand-500 py-3 font-display font-semibold text-white transition hover:bg-brand-600 disabled:opacity-60"
+              className="btn-primary"
             >
               {pending ? "Registrando..." : "Registrar presença"}
             </button>
@@ -59,7 +61,7 @@ export function ScanScreen() {
         <button
           type="button"
           onClick={() => setModo(modo === "camera" ? "manual" : "camera")}
-          className="mx-auto mt-4 block text-sm font-medium text-brand-500 hover:underline"
+          className="mx-auto mt-6 block text-sm font-extrabold text-brand-500 hover:underline"
         >
           {modo === "camera" ? "Digitar código manualmente" : "Usar a câmera"}
         </button>

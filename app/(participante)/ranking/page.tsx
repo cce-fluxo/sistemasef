@@ -18,18 +18,18 @@ export default async function RankingPage() {
 
   return (
     <div>
-      <header className="header-gradient-gold px-6 pb-6 pt-8 text-navy-950">
-        <h1 className="font-display text-2xl font-bold">Ranking</h1>
-        <p className="mt-1 text-sm text-navy-950/70">
+      <header className="header-gradient-gold px-5 pt-12 pb-7 text-navy-950">
+        <h1 className="font-display text-4xl leading-none uppercase">Ranking</h1>
+        <p className="mt-1.5 text-sm font-semibold text-navy-950/70">
           {ranking.dia
             ? `Ranking atualizado até ${formatarDia(ranking.dia)}`
             : "Ranking ainda não gerado — o primeiro snapshot sai depois da primeira noite do evento."}
         </p>
       </header>
 
-      <main className="flex flex-col gap-2 px-6 py-6">
+      <main className="flex flex-col gap-2.5 px-5 py-6">
         {ranking.linhas.length === 0 && (
-          <p className="text-center text-sm text-foreground/60">Nenhum snapshot de ranking disponível ainda.</p>
+          <p className="py-15 text-center text-sm text-faint">Nenhum snapshot de ranking disponível ainda.</p>
         )}
 
         {ranking.linhas.map((linha) => {
@@ -37,26 +37,29 @@ export default async function RankingPage() {
           return (
             <div
               key={linha.idParticipante}
-              className={`flex items-center gap-3 rounded-xl border p-3 ${
-                souEu ? "border-brand-500 bg-brand-500/10" : "border-black/5 bg-surface dark:border-white/5"
+              className={`flex items-center gap-3 rounded-2xl border p-3.5 ${
+                souEu ? "border-brand-500 bg-brand-500/10" : "border-line bg-surface"
               }`}
             >
               <span
-                className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full font-display text-sm font-bold ${
+                className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full font-heading text-sm font-bold ${
                   linha.posicao === 1
                     ? "bg-gold-400 text-navy-950"
                     : linha.posicao <= 3
-                      ? "bg-gold-400/30 text-gold-500"
-                      : "bg-surface-muted text-foreground/50"
+                      ? "bg-gold-400/30 text-gold-400"
+                      : "bg-surface-muted text-faint"
                 }`}
               >
                 {linha.posicao}
               </span>
-              <span className={`flex-1 text-sm font-medium ${souEu ? "text-brand-500" : "text-foreground"}`}>
+              <span className={`flex-1 text-[15px] font-extrabold ${souEu ? "text-brand-500" : "text-foreground"}`}>
                 {linha.nome}
                 {souEu ? " (você)" : ""}
               </span>
-              <span className="text-sm font-semibold text-foreground/70">{linha.pontos} pts</span>
+              <span className="font-heading text-lg font-bold text-gold-400">
+                {linha.pontos}
+                <span className="ml-1 text-[11px] font-normal text-faint">pts</span>
+              </span>
             </div>
           );
         })}

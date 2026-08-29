@@ -1,16 +1,24 @@
 import type { Metadata } from "next";
-import { Baloo_2, Inter } from "next/font/google";
+import { Black_Han_Sans, Nunito, Oswald } from "next/font/google";
 import "./globals.css";
 
-const baloo = Baloo_2({
+// Tipografia do protótipo (Figma): Black Han Sans para números/logo em
+// display, Oswald para títulos e botões em caixa alta, Nunito para o corpo.
+const blackHanSans = Black_Han_Sans({
   subsets: ["latin"],
-  weight: ["600", "700", "800"],
-  variable: "--font-baloo",
+  weight: "400",
+  variable: "--font-black-han",
 });
 
-const inter = Inter({
+const oswald = Oswald({
   subsets: ["latin"],
-  variable: "--font-inter",
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-oswald",
+});
+
+const nunito = Nunito({
+  subsets: ["latin"],
+  variable: "--font-nunito",
 });
 
 export const metadata: Metadata = {
@@ -42,7 +50,9 @@ export default function RootLayout({
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
       </head>
-      <body className={`${baloo.variable} ${inter.variable} min-h-screen font-sans antialiased`}>
+      <body
+        className={`${blackHanSans.variable} ${oswald.variable} ${nunito.variable} min-h-screen font-sans antialiased`}
+      >
         {children}
       </body>
     </html>

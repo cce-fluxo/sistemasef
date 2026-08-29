@@ -1,40 +1,29 @@
-import logo from "../../images/WhatsApp_Image_2026-08-07_at_18.02.49.jpeg"
+import { LogoBadge } from "@/components/LogoBadge";
 
-const FEATURES = [
-  { icon: "📱", label: "Check-in por QR Code" },
-  { icon: "🎯", label: "Missões e desafios" },
-  { icon: "🏆", label: "Ranking" },
-];
+const FEATURES = ["📱 Check-in por QR Code", "🎯 Missões e desafios", "🏆 Ranking"];
 
 // Painel de marca exibido só no desktop (breakpoint lg, 1024px) — no mobile a
 // tela de login mostra apenas o formulário centralizado.
 export function AuthBrandPanel() {
   return (
     <aside className="header-gradient-brand relative hidden w-[45%] max-w-xl shrink-0 flex-col items-center justify-center overflow-hidden px-12 py-16 text-white lg:flex">
-      <div className="flex flex-col items-center text-center">
-        <div className="flex h-28 w-28 items-center justify-center rounded-full ">
-          <img src={logo.src} alt="Semana Fluxo" className="h-full w-full rounded-full" />
-        </div>
+      <div className="relative flex flex-col items-center text-center">
+        <LogoBadge size={120} />
 
-        <p className="mt-8 text-xs font-semibold tracking-[0.3em] text-white/70 uppercase">— Semana Fluxo —</p>
-        <h2 className="mt-2 font-display text-5xl leading-none font-extrabold uppercase">
-          Semana <span className="text-gold-400">Fluxo</span>
-        </h2>
-        <p className="mt-4 max-w-xs text-sm font-medium text-white/80">
-          Check-in, missões e ranking do evento
+        <p className="mt-6 font-display text-sm tracking-[0.25em] uppercase text-white/80">— Semana —</p>
+        <p className="font-display text-[64px] leading-[0.9] uppercase">
+          Fluxo<span className="text-gold-400">021</span>
+        </p>
+        <p className="mt-4 max-w-xs text-base leading-relaxed font-semibold text-white/80">
+          Nosso jeito de fazer o amanhã
         </p>
 
         <div className="mt-10 flex w-full flex-col gap-3">
           {FEATURES.map((f) => (
-            <div key={f.label} className="rounded-xl bg-black/20 px-5 py-3 text-sm font-semibold">
-              {f.icon} {f.label}
-            </div>
+            <p key={f} className="rounded-[10px] bg-black/20 px-5 py-2.5 text-sm font-bold">
+              {f}
+            </p>
           ))}
-        </div>
-
-        <div className="mt-10 rounded-2xl bg-black/25 px-6 py-4">
-          <p className="text-sm font-semibold text-gold-400">🎉 5 dias de evento</p>
-          <p className="mt-1 text-xs text-white/70">App de gamificação</p>
         </div>
       </div>
     </aside>

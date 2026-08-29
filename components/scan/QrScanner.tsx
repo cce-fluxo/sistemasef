@@ -92,8 +92,19 @@ export function QrScanner({ ativo, onDecode }: Props) {
 
   return (
     <div>
-      <div className="relative mx-auto aspect-square w-full max-w-xs overflow-hidden rounded-3xl bg-black">
+      {/* Moldura com cantos e linha de varredura, como no protótipo (Figma). */}
+      <div className="relative mx-auto aspect-square w-full max-w-[260px] overflow-hidden rounded-2xl border-2 border-white/10 bg-black">
         <div id={elementId} className="h-full w-full" />
+        {ativo && status === "lendo" && (
+          <div
+            className="animate-scan pointer-events-none absolute right-0 left-0 h-0.5 bg-gradient-to-r from-transparent via-brand-500 to-transparent"
+            aria-hidden
+          />
+        )}
+        <span className="qr-corner qr-corner-tl" aria-hidden />
+        <span className="qr-corner qr-corner-tr" aria-hidden />
+        <span className="qr-corner qr-corner-bl" aria-hidden />
+        <span className="qr-corner qr-corner-br" aria-hidden />
         {ativo && status === "iniciando" && (
           <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center gap-3 text-white/70">
             <span className="h-8 w-8 animate-spin rounded-full border-2 border-white/30 border-t-white" />
@@ -101,6 +112,13 @@ export function QrScanner({ ativo, onDecode }: Props) {
           </div>
         )}
       </div>
+
+      {ativo && status === "lendo" && (
+        <p className="mx-auto mt-8 flex w-fit items-center gap-2 rounded-xl border border-brand-500/30 bg-brand-500/15 px-5 py-3 text-sm font-semibold text-muted">
+          <span className="h-2 w-2 rounded-full bg-brand-500" aria-hidden />
+          Buscando QR code...
+        </p>
+      )}
 
       {ativo && status === "permissao-negada" && (
         <MensagemErro

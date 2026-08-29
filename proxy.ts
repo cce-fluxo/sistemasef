@@ -1,10 +1,19 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { SESSION_COOKIE, sessionCookieOptions, signSession, shouldRefresh, verifySession } from "@/lib/auth/session";
 
-const PUBLIC_PATHS = ["/login", "/cadastro", "/recuperar-senha"];
+const PUBLIC_PATHS = ["/login", "/cadastro", "/recuperar-senha", "/redefinir-senha"];
+
+// Rotas públicas que NÃO devolvem quem já tem sessão para a home: chegar aqui
+// logado é legítimo (o link de redefinição vale para quem esqueceu a senha
+// mas continua logado em outro dispositivo).
+const PUBLIC_PATHS_SEM_REDIRECT = ["/redefinir-senha"];
 
 function isPublicPath(pathname: string): boolean {
   return PUBLIC_PATHS.some((p) => pathname === p || pathname.startsWith(`${p}/`));
+}
+
+function redirecionaSeAutenticado(pathname: string): boolean {
+  return !PUBLIC_PATHS_SEM_REDIRECT.some((p) => pathname === p || pathname.startsWith(`${p}/`));
 }
 
 function isAdminPath(pathname: string): boolean {
@@ -17,7 +26,7 @@ export async function proxy(request: NextRequest) {
   const session = token ? await verifySession(token) : null;
 
   if (isPublicPath(pathname)) {
-    if (session) {
+    if (session && redirecionaSeAutenticado(pathname)) {
       return NextResponse.redirect(new URL("/", request.url));
     }
     return NextResponse.next();
