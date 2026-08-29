@@ -7,6 +7,7 @@ import { getCatalogoPontuacao } from "@/lib/dados/catalogo";
 import { logoutAction } from "@/actions/auth";
 import { LogoBadge } from "@/components/LogoBadge";
 import { Ticker } from "@/components/Ticker";
+import { RefreshInscritosButton } from "@/components/admin/RefreshInscritosButton";
 
 const TICKER_ITEMS = ["NOSSO JEITO DE FAZER O AMANHÃ", "DDD 021", "A RUA É A NOSSA ESCOLA"];
 
@@ -91,12 +92,15 @@ export default async function HomePage() {
         </div>
 
         {session.role === "ADMIN" && (
-          <Link
-            href="/admin"
-            className="mt-6 flex items-center justify-center gap-2 rounded-xl bg-brand-500 px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-600"
-          >
-            Ir para Home Admin
-          </Link>
+          <div className="mt-6">
+            <Link
+              href="/admin"
+              className="flex items-center justify-center gap-2 rounded-xl bg-brand-500 px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-600"
+            >
+              Ir para Home Admin
+            </Link>
+            <RefreshInscritosButton />
+          </div>
         )}
 
         {resumo.ultimasMissoes.length > 0 && (

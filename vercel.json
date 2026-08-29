@@ -3,6 +3,10 @@
     {
       "path": "/api/cron/ranking",
       "schedule": "0 3 * * *"
+    },
+    {
+      "path": "/api/cron/refresh-inscritos",
+      "schedule": "*/5 * * * *"
     }
   ]
 }
