@@ -14,6 +14,10 @@ import { registrarPresenca, QrCodeInvalidoError, QrCodeNaoEncontradoError } from
  * Só responde quando `ENABLE_LOADTEST_ENDPOINT=true` -- em qualquer outro
  * caso devolve 404 (não 403) para não sinalizar nem a existência da rota.
  * Nunca deve ser habilitado em produção; ver load-tests/README.md.
+ *
+ * O caminho `/api/loadtest-scan` também precisa estar isento do gate de
+ * sessão no middleware (ver matcher em `proxy.ts`), senão o k6 (sem cookie)
+ * é redirecionado para /login antes de chegar aqui.
  */
 
 const bodySchema = z.object({
@@ -50,7 +54,7 @@ export async function POST(request: Request) {
     if (error instanceof QrCodeNaoEncontradoError) {
       return NextResponse.json({ erro: "QR Code não corresponde a nenhuma sessão do evento." }, { status: 404 });
     }
-    console.error("Endpoint de load test (/api/_loadtest/scan) falhou:", error);
+    console.error("Endpoint de load test (/api/loadtest-scan/scan) falhou:", error);
     return NextResponse.json({ erro: "Não foi possível registrar o check-in." }, { status: 500 });
   }
 }

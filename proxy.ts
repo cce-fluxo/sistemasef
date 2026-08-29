@@ -44,8 +44,8 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  // api/_loadtest fica de fora do gate de sessão: o endpoint de load testing
-  // (protegido pela sua própria env var ENABLE_LOADTEST_ENDPOINT, ver
-  // app/api/_loadtest/scan/route.ts) é chamado pelo k6 sem cookie de sessão.
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|api/cron|api/_loadtest).*)"],
+  // api/loadtest-scan fica de fora do gate de sessão: o endpoint de load
+  // testing (protegido pela sua própria env var ENABLE_LOADTEST_ENDPOINT, ver
+  // app/api/loadtest-scan/scan/route.ts) é chamado pelo k6 sem cookie de sessão.
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|api/cron|api/loadtest-scan).*)"],
 };

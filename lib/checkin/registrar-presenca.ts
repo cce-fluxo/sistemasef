@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { avaliarMissoes } from "@/lib/missoes/avaliador";
 
@@ -36,7 +37,7 @@ export function extrairQrCode(valorEscaneado: string): string {
  * Lógica de negócio pura do check-in (sem auth, sem rate limit, sem
  * invalidação de cache) -- compartilhada entre a Server Action de scan
  * (`actions/checkin.ts`) e o Route Handler de load testing
- * (`app/api/_loadtest/scan/route.ts`). Ambos os chamadores continuam
+ * (`app/api/loadtest-scan/scan/route.ts`). Ambos os chamadores continuam
  * responsáveis por autenticar o participante e aplicar rate limiting antes
  * de chegar aqui.
  */
@@ -58,11 +59,48 @@ export async function registrarPresenca(
     throw new QrCodeNaoEncontradoError("QR Code não corresponde a nenhuma sessão do evento.");
   }
 
+  try {
+    return await executarCheckin(participanteId, sessao);
+  } catch (erro) {
+    // Corrida real sob requisições concorrentes: duas chamadas para o
+    // mesmo par (idParticipante, idSessao) leem `jaExistia` como nulo e
+    // ambas tentam inserir. O `upsert` do Prisma não é um
+    // `INSERT ... ON CONFLICT` atômico (faz SELECT + INSERT/UPDATE), então
+    // a requisição perdedora recebe P2002 na constraint composta
+    // `@@unique([idParticipante, idSessao])` e a transação inteira aborta.
+    // Para o participante o resultado é idêntico a "presença já
+    // registrada": a Presença foi criada pela requisição vencedora, que
+    // também é quem avalia as missões. Reconhecemos isso aqui e devolvemos
+    // o mesmo shape de `jaRegistrado: true` — sem reavaliar missões nem
+    // creditar pontos de novo (isso duplicaria os pontos do participante).
+    if (erro instanceof Prisma.PrismaClientKnownRequestError && erro.code === "P2002") {
+      await prisma.presenca.findUniqueOrThrow({
+        where: { idParticipante_idSessao: { idParticipante: participanteId, idSessao: sessao.id } },
+        select: { id: true },
+      });
+      return {
+        jaRegistrado: true,
+        nomeSessao: sessao.nome,
+        pontosGanhos: 0,
+        missoesDesbloqueadas: [],
+      } satisfies CheckinResultado;
+    }
+    throw erro;
+  }
+}
+
+type SessaoCheckin = { id: number; nome: string; pontosBase: number };
+
+function executarCheckin(
+  participanteId: number,
+  sessao: SessaoCheckin,
+): Promise<CheckinResultado> {
   return prisma.$transaction(async (tx) => {
     // Pré-checagem "melhor esforço" só para a UX de "presença já
     // registrada" — a garantia real de não duplicar é o upsert abaixo,
-    // que se apoia na constraint única (idParticipante, idSessao) e é
-    // atômico mesmo sob concorrência.
+    // que se apoia na constraint única (idParticipante, idSessao). Sob
+    // concorrência o upsert pode falhar com P2002; esse caso é tratado
+    // pelo chamador (`registrarPresenca`).
     const jaExistia = await tx.presenca.findUnique({
       where: { idParticipante_idSessao: { idParticipante: participanteId, idSessao: sessao.id } },
       select: { id: true },
