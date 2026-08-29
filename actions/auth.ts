@@ -7,6 +7,7 @@ import { prisma } from "@/lib/prisma";
 import { hashPassword, verifyPassword } from "@/lib/auth/password";
 import { signSession, sessionCookieOptions, SESSION_COOKIE, type Role } from "@/lib/auth/session";
 import { getRatelimiter } from "@/lib/ratelimit";
+import { isEmailInscrito } from "@/lib/redis-inscritos";
 
 export type AuthActionState = { ok: true } | { ok: false; erro: string };
 
@@ -84,6 +85,13 @@ export async function registerAction(
   const { success: allowed } = await getRatelimiter("auth-register").limit(await clientIp());
   if (!allowed) {
     return { ok: false, erro: "Muitas tentativas. Tente novamente em instantes." };
+  }
+
+  // Só permite cadastro de quem está na lista oficial de inscritos da Semana
+  // Fluxo. Consulta apenas o cache no Redis (SISMEMBER) — a leitura da
+  // planilha fica isolada no cron /api/cron/refresh-inscritos.
+  if (!(await isEmailInscrito(parsed.data.email))) {
+    return { ok: false, erro: "Email não inscrito na Semana Fluxo, insira um válido" };
   }
 
   const existente = await prisma.participante.findUnique({
