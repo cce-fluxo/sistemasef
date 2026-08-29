@@ -5,7 +5,7 @@ export const dynamic = "force-dynamic";
 
 /**
  * Gatilho manual para invalidar o cache do ranking em produção sem esperar o
- * cron noturno (app/api/cron/ranking). Útil quando o snapshot já está correto
+ * cron noturno (app/api/cron/ranking).Útil quando o snapshot já está correto
  * no banco mas a tela ainda serve a versão cacheada do `unstable_cache`
  * (lib/dados/ranking.ts, tag "ranking").
  *
