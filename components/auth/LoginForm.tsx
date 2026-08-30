@@ -1,12 +1,13 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import Link from "next/link";
 import { loginAction } from "@/actions/auth";
-import { MailIcon, LockIcon } from "./icons";
+import { MailIcon, LockIcon, EyeIcon, EyeOffIcon } from "./icons";
 
 export function LoginForm() {
   const [state, formAction, isPending] = useActionState(loginAction, null);
+  const [mostrarSenha, setMostrarSenha] = useState(false);
 
   return (
     <form action={formAction} className="flex flex-col gap-4">
@@ -29,15 +30,26 @@ export function LoginForm() {
         <label htmlFor="senha" className="flex items-center gap-1.5 text-sm font-medium text-foreground/70">
           <LockIcon /> Senha
         </label>
-        <input
-          id="senha"
-          name="senha"
-          type="password"
-          autoComplete="current-password"
-          required
-          placeholder="••••••••"
-          className="rounded-xl border border-black/10 bg-surface-muted px-4 py-3 text-sm outline-none focus:border-brand-500 dark:border-white/10"
-        />
+        <div className="relative">
+          <input
+            id="senha"
+            name="senha"
+            type={mostrarSenha ? "text" : "password"}
+            autoComplete="current-password"
+            required
+            placeholder="••••••••"
+            className="w-full rounded-xl border border-black/10 bg-surface-muted px-4 py-3 pr-11 text-sm outline-none focus:border-brand-500 dark:border-white/10"
+          />
+          <button
+            type="button"
+            onClick={() => setMostrarSenha((v) => !v)}
+            aria-label={mostrarSenha ? "Ocultar senha" : "Mostrar senha"}
+            aria-pressed={mostrarSenha}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-foreground/50 transition hover:text-foreground/80"
+          >
+            {mostrarSenha ? <EyeOffIcon /> : <EyeIcon />}
+          </button>
+        </div>
       </div>
 
       <Link
