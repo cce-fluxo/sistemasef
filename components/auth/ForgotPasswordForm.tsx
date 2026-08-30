@@ -1,21 +1,24 @@
 "use client";
 
-import { useState } from "react";
+import { useActionState } from "react";
 import Link from "next/link";
+import { solicitarRecuperacaoAction } from "@/actions/auth";
 import { MailIcon } from "./icons";
 
 export function ForgotPasswordForm() {
-  const [email, setEmail] = useState("");
-  const [sent, setSent] = useState(false);
+  const [state, formAction, isPending] = useActionState(solicitarRecuperacaoAction, null);
 
-  if (sent) {
+  if (state?.ok) {
     return (
       <div className="flex flex-col items-center gap-3 text-center">
-        <p className="text-3xl">📬</p>
-        <p className="text-sm text-foreground/70">
-          Se existir uma conta para <strong className="text-foreground">{email}</strong>, você vai receber um
-          e-mail com instruções para redefinir sua senha.
+        <p className="text-3xl" aria-hidden>
+          📬
         </p>
+        <p className="text-sm text-foreground/70">
+          Se existir uma conta com esse e-mail, você vai receber um link para redefinir sua senha. O
+          link vale por 1 hora.
+        </p>
+        <p className="text-sm text-foreground/60">Não esqueça de conferir a caixa de spam.</p>
         <Link href="/login" className="mt-2 text-sm font-semibold text-brand-500 hover:underline">
           Voltar ao login
         </Link>
@@ -24,13 +27,7 @@ export function ForgotPasswordForm() {
   }
 
   return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        setSent(true);
-      }}
-      className="flex flex-col gap-4"
-    >
+    <form action={formAction} className="flex flex-col gap-4">
       <p className="text-sm text-foreground/60">
         Informe seu e-mail cadastrado e enviaremos um link para redefinir sua senha.
       </p>
@@ -49,17 +46,22 @@ export function ForgotPasswordForm() {
           autoComplete="email"
           required
           placeholder="seu@email.com"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
           className="rounded-xl border border-black/10 bg-surface-muted px-4 py-3 text-sm outline-none focus:border-brand-500 dark:border-white/10"
         />
       </div>
 
+      {state?.ok === false && (
+        <p role="alert" className="text-sm font-medium text-red-500">
+          {state.erro}
+        </p>
+      )}
+
       <button
         type="submit"
-        className="mt-2 rounded-xl bg-brand-500 py-3 text-center font-display text-base font-semibold text-white shadow-lg shadow-brand-500/30 transition hover:bg-brand-600"
+        disabled={isPending}
+        className="mt-2 rounded-xl bg-brand-500 py-3 text-center font-display text-base font-semibold text-white shadow-lg shadow-brand-500/30 transition hover:bg-brand-600 disabled:opacity-60"
       >
-        Enviar link
+        {isPending ? "Enviando..." : "Enviar link"}
       </button>
 
       <Link href="/login" className="text-center text-sm font-semibold text-brand-500 hover:underline">
