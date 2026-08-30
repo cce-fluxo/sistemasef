@@ -135,8 +135,8 @@ const SCENARIOS = {
     executor: 'ramping-vus',
     startVUs: 0,
     stages: [
-      { duration: '30s', target: 300 },
-      { duration: '3m', target: 500 },
+      { duration: '30s', target: 770 },
+      { duration: '3m', target: 1000 },
       { duration: '30s', target: 0 },
     ],
   },
