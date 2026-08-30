@@ -13,7 +13,7 @@ const SECOES = [
   },
   {
     titulo: "Organização",
-    texto: "Espaço reservado para a organização do evento se apresentar.",
+    texto: "A Semana Fluxo é um evento que conecta estudantes universitários a empresas, profissionais e novas oportunidades de carreira. Durante 5 dias, os participantes poderão visitar estandes, acompanhar palestras, fazer networking e conhecer diferentes caminhos para o futuro profissional!\n\nPara tornar essa experiência ainda mais divertida, criamos uma gamificação: participe das atividades, complete missões, acumule pontos e dispute as primeiras posições do ranking!",
   },
 ];
 
@@ -22,7 +22,7 @@ export default function SobrePage() {
     <div>
       <header className="header-gradient-info px-6 pb-10 pt-8 text-white">
         <p className="text-sm font-medium uppercase tracking-wide text-white/70">Sobre o evento</p>
-        <h1 className="mt-1 font-display text-2xl font-bold">Nosso jeito de fazer o evento</h1>
+        <h1 className="mt-1 font-display text-2xl font-bold">Nosso jeito de fazer o amanhã</h1>
       </header>
 
       <main className="flex flex-col gap-4 px-6 py-6">
