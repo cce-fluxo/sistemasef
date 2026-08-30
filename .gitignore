@@ -9,8 +9,10 @@
 /build
 
 # env
-.env
-.env*.local
+# Ignora qualquer .env (inclusive copias como .env.bak, .env.old), menos o
+# modelo versionado .env.example.
+.env*
+!.env.example
 load-tests/.env.loadtest
 
 # misc
