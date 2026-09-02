@@ -78,12 +78,16 @@ model Presenca {
 }
 
 model Missao {
-  id           Int    @id @default(autoincrement()) @map("id_missao")
-  idSessao     Int?   @map("id_sessao")
-  titulo       String @db.VarChar(255)
-  pontosBonus  Int    @map("pontos_bonus")
-  tipoCriterio String @map("tipo_criterio") @db.VarChar(255)
+  id           Int      @id @default(autoincrement()) @map("id_missao")
+  idSessao     Int?     @map("id_sessao")
+  titulo       String   @db.VarChar(255)
+  pontosBonus  Int      @map("pontos_bonus")
+  tipoCriterio String   @map("tipo_criterio") @db.VarChar(255)
   parametro    Int
+  // Trava de data no avaliador (lib/missoes/avaliador.ts): presenças
+  // anteriores a este dia não contam para o critério. Evita crédito
+  // retroativo de pontos ao criar uma missão no meio do evento.
+  criadoEm     DateTime @default(now()) @map("criado_em") @db.Date
 
   sessao               Sessao?              @relation(fields: [idSessao], references: [id])
   missoesDesbloqueadas MissaoDesbloqueada[]

@@ -194,6 +194,8 @@ async function main() {
   }
 
   console.log("Criando missões (cobrindo os 5 tipos de critério)...");
+  // `criadoEm: EVENT_START` em todas: o avaliador ignora presenças anteriores
+  // ao dia de criação da missão, e as presenças do seed começam em EVENT_START.
   const missoes = await Promise.all([
     prisma.missao.create({
       data: {
@@ -202,6 +204,7 @@ async function main() {
         tipoCriterio: "SESSAO_DIRETA",
         parametro: 1,
         pontosBonus: 40,
+        criadoEm: EVENT_START,
       },
     }),
     prisma.missao.create({
@@ -210,6 +213,7 @@ async function main() {
         tipoCriterio: "STANDS_POR_DIA",
         parametro: 3,
         pontosBonus: 40,
+        criadoEm: EVENT_START,
       },
     }),
     prisma.missao.create({
@@ -218,6 +222,7 @@ async function main() {
         tipoCriterio: "PALESTRAS_POR_DIA",
         parametro: 3,
         pontosBonus: 40,
+        criadoEm: EVENT_START,
       },
     }),
     prisma.missao.create({
@@ -226,6 +231,7 @@ async function main() {
         tipoCriterio: "PRESENCA_DIARIA_STREAK",
         parametro: 3,
         pontosBonus: 40,
+        criadoEm: EVENT_START,
       },
     }),
     prisma.missao.create({
@@ -234,6 +240,7 @@ async function main() {
         tipoCriterio: "PALESTRAS_TOTAL",
         parametro: 2,
         pontosBonus: 40,
+        criadoEm: EVENT_START,
       },
     }),
     prisma.missao.create({
@@ -242,6 +249,7 @@ async function main() {
         tipoCriterio: "STANDS_POR_DIA",
         parametro: 5,
         pontosBonus: 40,
+        criadoEm: EVENT_START,
       },
     }),
   ]);

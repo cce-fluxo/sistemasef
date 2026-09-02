@@ -22,6 +22,10 @@ export type MissaoParaAvaliar = {
   idSessao: number | null;
   tipoCriterio: string;
   parametro: number;
+  // Trava de data: presenças anteriores ao dia em que a missão foi criada
+  // não contam para nenhum critério — sem isso, criar uma missão hoje
+  // creditaria pontos retroativos a quem já bateu o critério ontem.
+  criadoEm: Date;
 };
 
 function chaveDia(data: Date): string {
@@ -31,13 +35,17 @@ function chaveDia(data: Date): string {
 function satisfazCriterio(missao: MissaoParaAvaliar, presencas: PresencaParaAvaliacao[]): boolean {
   const criterio = missao.tipoCriterio as TipoCriterio;
 
+  // Comparação lexicográfica de `YYYY-MM-DD` == comparação cronológica.
+  const desde = chaveDia(missao.criadoEm);
+  const presencasValidas = presencas.filter((p) => chaveDia(p.registradoEm) >= desde);
+
   switch (criterio) {
     case "SESSAO_DIRETA":
-      return presencas.some((p) => p.idSessao === missao.idSessao);
+      return presencasValidas.some((p) => p.idSessao === missao.idSessao);
 
     case "STANDS_POR_DIA": {
       const estandesPorDia = new Map<string, number>();
-      for (const p of presencas) {
+      for (const p of presencasValidas) {
         if (p.tipoSessao !== "ESTANDE") continue;
         const chave = chaveDia(p.registradoEm);
         estandesPorDia.set(chave, (estandesPorDia.get(chave) ?? 0) + 1);
@@ -47,7 +55,7 @@ function satisfazCriterio(missao: MissaoParaAvaliar, presencas: PresencaParaAval
 
     case "PALESTRAS_POR_DIA": {
       const palestrasPorDia = new Map<string, number>();
-      for (const p of presencas) {
+      for (const p of presencasValidas) {
         if (p.tipoSessao !== "PALESTRA") continue;
         const chave = chaveDia(p.registradoEm);
         palestrasPorDia.set(chave, (palestrasPorDia.get(chave) ?? 0) + 1);
@@ -56,12 +64,12 @@ function satisfazCriterio(missao: MissaoParaAvaliar, presencas: PresencaParaAval
     }
 
     case "PRESENCA_DIARIA_STREAK": {
-      const diasComPresenca = new Set(presencas.map((p) => chaveDia(p.registradoEm)));
+      const diasComPresenca = new Set(presencasValidas.map((p) => chaveDia(p.registradoEm)));
       return diasComPresenca.size >= missao.parametro;
     }
 
     case "PALESTRAS_TOTAL":
-      return presencas.filter((p) => p.tipoSessao === "PALESTRA").length >= missao.parametro;
+      return presencasValidas.filter((p) => p.tipoSessao === "PALESTRA").length >= missao.parametro;
 
     default: {
       const criterioDesconhecido: never = criterio;

@@ -10,7 +10,15 @@ function presenca(
 }
 
 function missao(overrides: Partial<MissaoParaAvaliar> & { id: number }): MissaoParaAvaliar {
-  return { idSessao: null, tipoCriterio: "SESSAO_DIRETA", parametro: 1, ...overrides };
+  // `criadoEm` bem no passado por padrão: os testes que não exercitam a trava
+  // de data enxergam todo o histórico, como antes.
+  return {
+    idSessao: null,
+    tipoCriterio: "SESSAO_DIRETA",
+    parametro: 1,
+    criadoEm: new Date("2000-01-01"),
+    ...overrides,
+  };
 }
 
 describe("avaliarMissoes — SESSAO_DIRETA", () => {
@@ -121,6 +129,63 @@ describe("avaliarMissoes — PALESTRAS_TOTAL", () => {
 
   it("não conta presenças em estandes", () => {
     const presencas = [presenca(1, "PALESTRA", "2026-09-14"), presenca(2, "ESTANDE", "2026-09-15")];
+    expect(avaliarMissoes(presencas, [alvo])).toEqual([]);
+  });
+});
+
+describe("avaliarMissoes — trava de data (criadoEm)", () => {
+  it("não conta presenças anteriores ao dia de criação da missão (PALESTRAS_POR_DIA)", () => {
+    const alvo = missao({
+      id: 6,
+      tipoCriterio: "PALESTRAS_POR_DIA",
+      parametro: 3,
+      criadoEm: new Date("2026-09-15"),
+    });
+    const presencas = [
+      presenca(1, "PALESTRA", "2026-09-14"),
+      presenca(2, "PALESTRA", "2026-09-14"),
+      presenca(3, "PALESTRA", "2026-09-14"),
+    ];
+    expect(avaliarMissoes(presencas, [alvo])).toEqual([]);
+  });
+
+  it("conta presenças do próprio dia de criação em diante", () => {
+    const alvo = missao({
+      id: 6,
+      tipoCriterio: "PALESTRAS_POR_DIA",
+      parametro: 3,
+      criadoEm: new Date("2026-09-15"),
+    });
+    const presencas = [
+      presenca(1, "PALESTRA", "2026-09-15"),
+      presenca(2, "PALESTRA", "2026-09-15"),
+      presenca(3, "PALESTRA", "2026-09-15"),
+    ];
+    expect(avaliarMissoes(presencas, [alvo])).toEqual([alvo]);
+  });
+
+  it("presenças anteriores não entram na contagem de PALESTRAS_TOTAL", () => {
+    const alvo = missao({
+      id: 7,
+      tipoCriterio: "PALESTRAS_TOTAL",
+      parametro: 2,
+      criadoEm: new Date("2026-09-15"),
+    });
+    const presencas = [
+      presenca(1, "PALESTRA", "2026-09-14"),
+      presenca(2, "PALESTRA", "2026-09-15"),
+    ];
+    expect(avaliarMissoes(presencas, [alvo])).toEqual([]);
+  });
+
+  it("SESSAO_DIRETA também respeita a trava: presença na sessão-alvo antes da criação não vale", () => {
+    const alvo = missao({
+      id: 8,
+      tipoCriterio: "SESSAO_DIRETA",
+      idSessao: 42,
+      criadoEm: new Date("2026-09-15"),
+    });
+    const presencas = [presenca(42, "PALESTRA", "2026-09-14")];
     expect(avaliarMissoes(presencas, [alvo])).toEqual([]);
   });
 });
