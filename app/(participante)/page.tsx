@@ -6,6 +6,7 @@ import { getResumoParticipante } from "@/lib/dados/participante";
 import { getCatalogoPontuacao } from "@/lib/dados/catalogo";
 import { logoutAction } from "@/actions/auth";
 import { LogoBadge } from "@/components/LogoBadge";
+import { MissaoPopup } from "@/components/MissaoPopup";
 import { Ticker } from "@/components/Ticker";
 import { RefreshInscritosButton } from "@/components/admin/RefreshInscritosButton";
 
@@ -41,6 +42,7 @@ export default async function HomePage() {
 
   return (
     <div>
+      <MissaoPopup />
       <header className="header-gradient-brand px-6 pb-8 pt-8 text-white">
         <div className="flex items-start justify-between gap-4">
           <div>
