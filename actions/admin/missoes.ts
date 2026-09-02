@@ -9,7 +9,13 @@ import { invalidarResumoDeParticipantesComMissao } from "@/lib/dados/participant
 
 export type AdminActionState = { ok: true } | { ok: false; erro: string };
 
-const TIPOS_CRITERIO = ["SESSAO_DIRETA", "STANDS_POR_DIA", "PRESENCA_DIARIA_STREAK", "PALESTRAS_TOTAL"] as const;
+const TIPOS_CRITERIO = [
+  "SESSAO_DIRETA",
+  "STANDS_POR_DIA",
+  "PALESTRAS_POR_DIA",
+  "PRESENCA_DIARIA_STREAK",
+  "PALESTRAS_TOTAL",
+] as const;
 
 const missaoSchema = z.object({
   titulo: z.string().trim().min(1),

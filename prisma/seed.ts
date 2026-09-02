@@ -193,7 +193,7 @@ async function main() {
     );
   }
 
-  console.log("Criando missões (cobrindo os 4 tipos de critério)...");
+  console.log("Criando missões (cobrindo os 5 tipos de critério)...");
   const missoes = await Promise.all([
     prisma.missao.create({
       data: {
@@ -208,6 +208,14 @@ async function main() {
       data: {
         titulo: "Maratona de Estandes",
         tipoCriterio: "STANDS_POR_DIA",
+        parametro: 3,
+        pontosBonus: 40,
+      },
+    }),
+    prisma.missao.create({
+      data: {
+        titulo: "Dia de Palestras",
+        tipoCriterio: "PALESTRAS_POR_DIA",
         parametro: 3,
         pontosBonus: 40,
       },

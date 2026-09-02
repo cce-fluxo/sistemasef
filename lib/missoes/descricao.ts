@@ -18,6 +18,8 @@ export function descreverCriterio(missao: MissaoComSessao): string {
         : "Registre presença na sessão indicada.";
     case "STANDS_POR_DIA":
       return `Registre presença em ${missao.parametro} estandes diferentes no mesmo dia.`;
+    case "PALESTRAS_POR_DIA":
+      return `Participe de ${missao.parametro} palestras no mesmo dia.`;
     case "PRESENCA_DIARIA_STREAK":
       return `Registre presença em pelo menos ${missao.parametro} dias distintos do evento.`;
     case "PALESTRAS_TOTAL":

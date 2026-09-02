@@ -7,6 +7,7 @@ import type { TipoSessao } from "@prisma/client";
 export type TipoCriterio =
   | "SESSAO_DIRETA"
   | "STANDS_POR_DIA"
+  | "PALESTRAS_POR_DIA"
   | "PRESENCA_DIARIA_STREAK"
   | "PALESTRAS_TOTAL";
 
@@ -42,6 +43,16 @@ function satisfazCriterio(missao: MissaoParaAvaliar, presencas: PresencaParaAval
         estandesPorDia.set(chave, (estandesPorDia.get(chave) ?? 0) + 1);
       }
       return [...estandesPorDia.values()].some((quantidade) => quantidade >= missao.parametro);
+    }
+
+    case "PALESTRAS_POR_DIA": {
+      const palestrasPorDia = new Map<string, number>();
+      for (const p of presencas) {
+        if (p.tipoSessao !== "PALESTRA") continue;
+        const chave = chaveDia(p.registradoEm);
+        palestrasPorDia.set(chave, (palestrasPorDia.get(chave) ?? 0) + 1);
+      }
+      return [...palestrasPorDia.values()].some((quantidade) => quantidade >= missao.parametro);
     }
 
     case "PRESENCA_DIARIA_STREAK": {

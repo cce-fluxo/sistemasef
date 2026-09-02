@@ -58,6 +58,37 @@ describe("avaliarMissoes — STANDS_POR_DIA", () => {
   });
 });
 
+describe("avaliarMissoes — PALESTRAS_POR_DIA", () => {
+  const alvo = missao({ id: 5, tipoCriterio: "PALESTRAS_POR_DIA", parametro: 3 });
+
+  it("desbloqueia quando o parâmetro de palestras é atingido no mesmo dia", () => {
+    const presencas = [
+      presenca(1, "PALESTRA", "2026-09-14"),
+      presenca(2, "PALESTRA", "2026-09-14"),
+      presenca(3, "PALESTRA", "2026-09-14"),
+    ];
+    expect(avaliarMissoes(presencas, [alvo])).toEqual([alvo]);
+  });
+
+  it("não desbloqueia se as palestras estão espalhadas em dias diferentes", () => {
+    const presencas = [
+      presenca(1, "PALESTRA", "2026-09-14"),
+      presenca(2, "PALESTRA", "2026-09-15"),
+      presenca(3, "PALESTRA", "2026-09-16"),
+    ];
+    expect(avaliarMissoes(presencas, [alvo])).toEqual([]);
+  });
+
+  it("ignora presenças em estandes na contagem", () => {
+    const presencas = [
+      presenca(1, "PALESTRA", "2026-09-14"),
+      presenca(2, "PALESTRA", "2026-09-14"),
+      presenca(3, "ESTANDE", "2026-09-14"),
+    ];
+    expect(avaliarMissoes(presencas, [alvo])).toEqual([]);
+  });
+});
+
 describe("avaliarMissoes — PRESENCA_DIARIA_STREAK", () => {
   const alvo = missao({ id: 3, tipoCriterio: "PRESENCA_DIARIA_STREAK", parametro: 3 });
 

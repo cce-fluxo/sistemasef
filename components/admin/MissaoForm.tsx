@@ -9,6 +9,7 @@ const campoClasse =
 const TIPOS_CRITERIO = [
   { valor: "SESSAO_DIRETA", label: "Check-in em sessão específica" },
   { valor: "STANDS_POR_DIA", label: "N estandes no mesmo dia" },
+  { valor: "PALESTRAS_POR_DIA", label: "N palestras no mesmo dia" },
   { valor: "PRESENCA_DIARIA_STREAK", label: "N dias distintos com presença" },
   { valor: "PALESTRAS_TOTAL", label: "N palestras no total" },
 ] as const;
