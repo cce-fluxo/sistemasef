@@ -2,7 +2,7 @@
   "crons": [
     {
       "path": "/api/cron/ranking",
-      "schedule": "0 20 * * *"
+      "schedule": "5 20 * * *"
     },
     {
       "path": "/api/cron/refresh-inscritos",
