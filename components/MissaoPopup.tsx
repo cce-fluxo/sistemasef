@@ -2,29 +2,22 @@
 
 import { useEffect, useState } from "react";
 
-// Aparece uma vez por sessão do navegador (logo após o login, quando a Home
-// monta pela primeira vez). O flag no sessionStorage evita reexibir a cada
-// navegação até o usuário abrir o app de novo.
-const STORAGE_KEY = "missao-triplo-vista";
+// Aparece uma vez por carregamento de página: a variável de módulo é reiniciada
+// em todo load de documento (abrir o app, refresh, redirect do login), mas
+// persiste entre navegações SPA — então voltar para a Home vindo de outra aba
+// não reexibe o popup durante a mesma visita.
+let popupMostradoNestaCarga = false;
 
 export function MissaoPopup() {
   const [aberto, setAberto] = useState(false);
 
   useEffect(() => {
-    try {
-      if (sessionStorage.getItem(STORAGE_KEY)) return;
-    } catch {
-      // sessionStorage indisponível (modo privado antigo etc.) — mostra mesmo assim
-    }
+    if (popupMostradoNestaCarga) return;
+    popupMostradoNestaCarga = true;
     setAberto(true);
   }, []);
 
   function fechar() {
-    try {
-      sessionStorage.setItem(STORAGE_KEY, "1");
-    } catch {
-      // ignora: no pior caso o popup reaparece na próxima navegação
-    }
     setAberto(false);
   }
 
