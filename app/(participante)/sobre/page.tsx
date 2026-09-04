@@ -9,7 +9,7 @@ const SECOES = [
   {
     titulo: "Pontuação",
     texto:
-      "Cada estande e palestra vale pontos diferentes, definidos pela organização. O ranking é atualizado uma vez por dia, sempre à noite.",
+      "Cada estande e palestra vale pontos diferentes, definidos pela organização. O ranking é atualizado uma vez por dia, sempre à noite. Os Qrcodes devem ser escaneados logo após o final de cada palestra ou após a visita à um estande.",
   },
   {
     titulo: "Organização",
