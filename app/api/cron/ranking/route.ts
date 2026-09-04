@@ -60,18 +60,23 @@ export async function GET(request: Request) {
       ORDER BY posicao;
     `;
 
-    // createMany + skipDuplicates: a constraint única (idParticipante, dia)
-    // garante que rodar o cron duas vezes no mesmo dia não duplica
-    // registros — idempotente por construção, sem lógica extra aqui.
-    const resultado = await prisma.rankingSnapshot.createMany({
-      data: linhas.map((linha) => ({
-        idParticipante: linha.id_participante,
-        pontosCalculados: Number(linha.pontos_totais),
-        posicao: Number(linha.posicao),
-        dia: hoje,
-        geradoEm: hoje,
-      })),
-      skipDuplicates: true,
+    // Apaga o snapshot do dia antes de gravar de novo: o cron pode rodar mais
+    // de uma vez no mesmo dia (reexecução manual, retry, ranking atualizado
+    // às 16h durante o evento) e cada execução precisa refletir os pontos
+    // recalculados agora — não só a primeira execução do dia. Com
+    // createMany + skipDuplicates isso ficava congelado no primeiro valor
+    // por causa da constraint única (idParticipante, dia).
+    const resultado = await prisma.$transaction(async (tx) => {
+      await tx.rankingSnapshot.deleteMany({ where: { dia: hoje } });
+      return tx.rankingSnapshot.createMany({
+        data: linhas.map((linha) => ({
+          idParticipante: linha.id_participante,
+          pontosCalculados: Number(linha.pontos_totais),
+          posicao: Number(linha.posicao),
+          dia: hoje,
+          geradoEm: hoje,
+        })),
+      });
     });
 
     // `{ expire: 0 }` e não `"max"`: este handler é um job externo (cron da
