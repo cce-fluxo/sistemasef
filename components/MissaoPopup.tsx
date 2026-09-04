@@ -38,14 +38,14 @@ export function MissaoPopup() {
         <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-gold-400/20 text-3xl">
           🏆
         </div>
-        <p className="mt-4 text-xs font-semibold uppercase tracking-wide text-gold-500">
-          Missão do dia
+        <p className="mt-4 text-xl font-semibold uppercase tracking-wide text-red-600">
+          ATENÇÃO
         </p>
         <h2 id="missao-popup-titulo" className="mt-1 font-display text-xl font-bold text-foreground">
-          Triplo de Conhecimento
+          Encerramento do GAMEFICATION
         </h2>
         <p className="mt-2 text-sm text-foreground/60">
-          Participe de 3 palestras hoje e ganhe <span className="font-semibold text-gold-500">+30 pontos</span>!
+          Participe do Encerramento às 16:30 do dia 04/09 e ganhe <span className="font-semibold text-gold-500">seus brindes</span>!
         </p>
 
         <button
