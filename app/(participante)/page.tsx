@@ -37,7 +37,6 @@ export default async function HomePage() {
     { href: "/sobre", label: "Sobre", subtitle: "A nossa história" },
     { href: "/missoes", label: "Missões", subtitle: `${resumo.totalMissoesDesbloqueadas}/${catalogo.totalMissoes} completas` },
     { href: "/agenda", label: "Agenda", subtitle: "5 dias de evento" },
-    { href: "/ranking", label: "Ranking", subtitle: "Ver classificação" },
   ];
 
   return (
@@ -100,6 +99,12 @@ export default async function HomePage() {
               className="flex items-center justify-center gap-2 rounded-xl bg-brand-500 px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-600"
             >
               Ir para Home Admin
+            </Link>
+            <Link
+              href="/admin/ranking"
+              className="mt-3 flex items-center justify-center gap-2 rounded-xl border-t-4 border-brand-500 bg-surface px-4 py-3 text-sm font-semibold text-foreground shadow-sm transition hover:bg-surface-muted"
+            >
+              Ver Ranking
             </Link>
             <RefreshInscritosButton />
           </div>

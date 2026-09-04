@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { getSession } from "@/lib/auth/get-session";
+import { requireAdmin } from "@/lib/auth/require-admin";
 import { getRankingAtual } from "@/lib/dados/ranking";
 
 export const metadata: Metadata = {
@@ -13,7 +13,7 @@ function formatarDia(dia: Date): string {
 }
 
 export default async function RankingPage() {
-  const session = await getSession();
+  const session = await requireAdmin();
   const ranking = await getRankingAtual();
 
   return (
@@ -33,7 +33,7 @@ export default async function RankingPage() {
         )}
 
         {ranking.linhas.map((linha) => {
-          const souEu = session?.id === linha.idParticipante;
+          const souEu = session.id === linha.idParticipante;
           return (
             <div
               key={linha.idParticipante}

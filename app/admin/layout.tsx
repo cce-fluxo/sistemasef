@@ -6,6 +6,7 @@ const LINKS = [
   { href: "/admin/sessoes", label: "Sessões" },
   { href: "/admin/missoes", label: "Missões" },
   { href: "/admin/presencas", label: "Presenças" },
+  { href: "/admin/ranking", label: "Ranking" },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
