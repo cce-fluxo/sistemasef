@@ -42,7 +42,7 @@ export function MissaoPopup() {
           ATENÇÃO
         </p>
         <h2 id="missao-popup-titulo" className="mt-1 font-display text-xl font-bold text-foreground">
-          Encerramento do GAMEFICATION
+          Encerramento do GAMEFICATION às 16:30!!!!
         </h2>
         <p className="mt-2 text-sm text-foreground/60">
           Participe do Encerramento às 16:30 do dia 04/09 e ganhe <span className="font-semibold text-gold-500">seus brindes</span>!
